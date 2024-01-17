@@ -12,41 +12,47 @@ import requests
 import sys
 
 class Keys(str, Enum):
-    appVersion = "appVersion"
-    bundleId = "bundleId"
-    latitude = "latitude"
-    locale = "locale"
-    longitude = "longitude"
-    maxPlayers = "maxPlayers"
-    minPlayers = "minPlayers"
-    platform = "platform"
-    playerCount = "playerCount",
-    secondsInQueue = "secondsInQueue"
+    APP_VERSION = "appVersion"
+    BUNDLE_ID = "bundleId"
+    LATITUDE = "latitude"
+    LOCALE = "locale"
+    LONGITUDE = "longitude"
+    MAX_PLAYERS = "maxPlayers"
+    MIN_PLAYERS = "minPlayers"
+    PLATFORM = "platform"
+    PLAYER_COUNT = "playerCount",
+    SECONDS_IN_QUEUE = "secondsInQueue"
 
 
-def to_IndexRequestPlayersTuple(index, input):
+def to_index_request_players_tuple(index, input):
     """ Return a tuple of the index(0), request (1), and list of player properties (2)
     """
 
-    requestInput = input[0] if type(input) == list else input
-    inputList = input if type(input) == list else [ input ]
-    playersProperties = list(map(lambda p: to_PlayerProperties(p), inputList))
-    players = list(map(lambda i: to_Player(index, i + 1, playersProperties[i]), range(0, len(playersProperties))))
+    request_input = input[0] if type(input) == list else input
+    input_list = input if type(input) == list else [ input ]
+    players_properties = [
+        to_player_properties(p)
+        for p in input_list
+    ]
+    players = [
+        to_player(index, i + 1, players_properties[i])
+        for i in range(0, len(players_properties))
+    ]
     request = {
         "requestName": f'r{index}',
         "playerId": f'r{index}_p1',
-        "properties": playersProperties[0],
+        "properties": players_properties[0],
         "players": players,
-        Keys.appVersion: requestInput.get(Keys.appVersion) or "1.0.0",
-        Keys.bundleId: requestInput.get(Keys.bundleId) or "com.example.mygame",
-        Keys.platform: requestInput.get(Keys.platform) or "IOS",
-        Keys.locale: requestInput.get(Keys.locale) or "EN-US",
-        Keys.longitude: requestInput.get(Keys.longitude) or 0,
-        Keys.latitude: requestInput.get(Keys.latitude) or 0,
-        Keys.minPlayers: requestInput.get(Keys.minPlayers) or 2,
-        Keys.maxPlayers: requestInput.get(Keys.maxPlayers) or 2,
-        Keys.playerCount: len(players),
-        Keys.secondsInQueue : requestInput.get(Keys.secondsInQueue) or 0
+        Keys.APP_VERSION: request_input.get(Keys.APP_VERSION) or "1.0.0",
+        Keys.BUNDLE_ID: request_input.get(Keys.BUNDLE_ID) or "com.example.mygame",
+        Keys.PLATFORM: request_input.get(Keys.PLATFORM) or "IOS",
+        Keys.LOCALE: request_input.get(Keys.LOCALE) or "EN-US",
+        Keys.LONGITUDE: request_input.get(Keys.LONGITUDE) or 0,
+        Keys.LATITUDE: request_input.get(Keys.LATITUDE) or 0,
+        Keys.MIN_PLAYERS: request_input.get(Keys.MIN_PLAYERS) or 2,
+        Keys.MAX_PLAYERS: request_input.get(Keys.MAX_PLAYERS) or 2,
+        Keys.PLAYER_COUNT: len(players),
+        Keys.SECONDS_IN_QUEUE : request_input.get(Keys.SECONDS_IN_QUEUE) or 0
     }
 
     return (
@@ -55,30 +61,30 @@ def to_IndexRequestPlayersTuple(index, input):
         players
     )
 
-def to_Player(requestIndex, playerIndex, playerProperties):
+def to_player(request_index, player_index, player_properties):
     """ Return player properties - stripped of request level keys
     """
     
     return {
-        "playerId": f'r{requestIndex}_p{playerIndex}',
-        "properties": playerProperties,
-        "requestName": f'r{requestIndex}'
+        "playerId": f'r{request_index}_p{player_index}',
+        "properties": player_properties,
+        "requestName": f'r{request_index}'
     }
 
-def to_PlayerProperties(input):
+def to_player_properties(input):
     """ Return player properties - stripped of request level keys
     """
     
-    return dict(filter(lambda item: not item[0] in [e.value for e in Keys], input.items()))
+    return dict(item for item in input.items() if not item[0] in [e.value for e in Keys])
 
 
-def to_Request(requestIndex):
+def to_request(request_index):
     return {
         "type": "gameCenterMatchmakingTestRequests",
-        "id": f'${{r{requestIndex}}}'
+        "id": f'${{r{request_index}}}'
     }
 
-def to_Teams(indexRequestPlayers):
+def to_teams(indexRequestPlayers):
     """ Return teams from list of tuples of index, request and list of players.
     """
     maxPlayers = 2
@@ -102,7 +108,7 @@ def to_Teams(indexRequestPlayers):
     teamIndex = 0
     
     for indexRequestPlayer in indexRequestPlayers:
-        requestIndex = indexRequestPlayer[0]
+        request_index = indexRequestPlayer[0]
         request = indexRequestPlayer[1]
         players = indexRequestPlayer[2]
         
@@ -172,11 +178,14 @@ def main():
     input = json.load(sys.stdin)
     verify_input(input)
 
-    indexRequestPlayers = list(map(lambda t: to_IndexRequestPlayersTuple(t[0], t[1]),
-                                       map(lambda i: (i + 1, input[i]), range(0, len(input)))))
-    requests = list(map(lambda t: t[1], indexRequestPlayers))
-    players = list(chain.from_iterable(map(lambda t: t[2], indexRequestPlayers)))
-    teams = to_Teams(indexRequestPlayers)
+    index_input = [(i + 1, input[i]) for i in range(0, len(input))]
+    index_request_players = [
+        to_index_request_players_tuple(t[0], t[1])
+        for t in index_input
+    ]
+    requests = [ t[1] for t in index_request_players ]
+    players = list(chain.from_iterable(map(lambda t: t[2], index_request_players)))
+    teams = to_teams(index_request_players)
     output = {
         "requests": requests,
         "players": players,

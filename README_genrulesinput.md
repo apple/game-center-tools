@@ -8,11 +8,11 @@ Explore rule expressions using the [JMESPath playground](https://play.jmespath.o
 ## Overview
 
 [Rule based matchmaking](https://developer.apple.com/documentation/gamekit/matchmaking_rules) uses expressions in the [JMESPath JSON query language](https://jmespath.org) against JSON representations of match requests to select the best requests for a match.
-The expressions can be complex and it may be useful to explore the resuls of intermediate expressions in order to obtain the desired result.
+The expressions can be complex and it is useful to explore the results of intermediate expressions in order to obtain the desired result.
 Explore	rule expressions using the [JMESPath playground](https://play.jmespath.org) with example input representing requests in the queue.
 The structure of the JSON used as input when evaluating the expressions is described in the App Store Connect API documentation for [Expressions](https://developer.apple.com/documentation/appstoreconnectapi/game_center/expressions).
-However, it can be tedious and time consuming to construct the input manually.
-Use the script  to generate the input from the same compact input as the `testrules.py` script.
+However, it is tedious and time consuming to construct the input manually.
+Use the script to generate the input from the same compact input as the `testrules.py` script.
 
 For a complete list of the `genrulesinput.py` arguments, run the  `genrulesinput.py —h` command.
 
@@ -54,9 +54,9 @@ $ genrulesinput.py << 'EOF'
 }
 ```
 
-The generated input is over 160 lines and so it is left to the reader to run the script as above and paste the generated input into the [JMESPath playground](https://play.jmespath.org) "Input JSON" field.
+The script generates over 160 lines and so it is left to the reader to run the script as above and paste the generated input into the [JMESPath playground](https://play.jmespath.org) "Input JSON" field.
 
-Enter `players[].properties.skill` into the expression field and observe the content of the "Result" field and observe the `Result` field contains an array of the skill value for each player.
+Enter `players[].properties.skill` into the expression field. Observe the `Result` field contains an array of the skill value for each player.
 
 ```
 [
@@ -67,11 +67,11 @@ Enter `players[].properties.skill` into the expression field and observe the con
 ]
 ```
 
-The [diff](https://developer.apple.com/documentation/appstoreconnectapi/game_center/expressions/computing_numeric_differences) function can be used evaluate the skill range when used in a MATCH rule expression.
-Currently this isn't available in the [JMESPath playground](https://play.jmespath.org).
+You can use the [diff](https://developer.apple.com/documentation/appstoreconnectapi/game_center/expressions/computing_numeric_differences) function to evaluate the skill range in a MATCH rule expression.
+However, currently this isn't available in the [JMESPath playground](https://play.jmespath.org).
 
-If you use the expression `requests[].properties.skill` the result only contains the skill values for the players making the requests and doesn't include the value provided for the invited player.
-This is the difference between the `players` and the `requests` object that is provided at the root of the generated input.
+If you use the expression `requests[].properties.skill` the result only contains the skill values for the players making the requests and doesn't include the value the request provides for the invited player.
+This is the difference between the `players` and the `requests` object in the input.
 
 ```
 [
@@ -126,7 +126,7 @@ $ genrulesinput.py << 'EOF'
 ...
 ```
 
-The objective is to write an expression that evaluates an array which contains a skill value for each requests and provides a default value where no skill property is provided.
+The objective is to write an expression that evaluates an array which contains a skill value for each request and provides a default value where the request provides no skill property.
 Enter the expression used before `players[].properties.skill` to obtain an array of skill values.
 
 ```
