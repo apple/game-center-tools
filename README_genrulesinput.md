@@ -2,27 +2,27 @@
 
 **Abstract:**
 
-Explore rule expressions using the [JMESPath playground](https://play.jmespath.org) and use a Python 3 script to generate the rule based matchmaking JSON input.
+Explore rule expressions using the [JMESPath playground](https://play.jmespath.org), and use a Python 3 script to generate the rule-based matchmaking JSON input.
 
 
 ## Overview
 
-[Rule based matchmaking](https://developer.apple.com/documentation/gamekit/matchmaking_rules) uses expressions in the [JMESPath JSON query language](https://jmespath.org) against JSON representations of match requests to select the best requests for a match.
-The expressions can be complex and it is useful to explore the results of intermediate expressions in order to obtain the desired result.
+[Rule-based matchmaking](https://developer.apple.com/documentation/gamekit/matchmaking_rules) uses expressions in the [JMESPath JSON query language](https://jmespath.org) against JSON representations of match requests to select the best requests for a match.
+The expressions can be complex and it's useful to explore the results of intermediate expressions in order to obtain the desired result.
 Explore	rule expressions using the [JMESPath playground](https://play.jmespath.org) with example input representing requests in the queue.
 The structure of the JSON used as input when evaluating the expressions is described in the App Store Connect API documentation for [Expressions](https://developer.apple.com/documentation/appstoreconnectapi/game_center/expressions).
-However, it is tedious and time consuming to construct the input manually.
+However, it's tedious and time consuming to construct the input manually.
 Use the script to generate the input from the same compact input as the `testrules.py` script.
 
 For a complete list of the `genrulesinput.py` arguments, run the  `genrulesinput.py —h` command.
 
 ## Example 1
 
-In The first example there are 3 requests in the queue:
+In The first example, there are 3 requests in the queue:
 
-1. Player skill = 1, submitted 20 seconds ago.
-2. Player skill = 50, submitted 10 seconds ago.
-3. Request from player with skill = 20, invited player skill = 30, submitted just now.
+1. Player skill = 1, submitted 20 seconds ago
+2. Player skill = 50, submitted 10 seconds ago
+3. Request from player with skill = 20, invited player skill = 30, submitted just now
 
 Run the [genrulesinput.py](https://github.com/apple/game-center-tools/README_genrulesinput.md) script with the input shown to generate the input for these requests.
 
@@ -54,9 +54,9 @@ $ genrulesinput.py << 'EOF'
 }
 ```
 
-The script generates over 160 lines and so it is left to the reader to run the script as above and paste the generated input into the [JMESPath playground](https://play.jmespath.org) "Input JSON" field.
+The script generates over 160 lines and so it's left to the reader to run the script as above and paste the generated input into the [JMESPath playground](https://play.jmespath.org) "Input JSON" field.
 
-Enter `players[].properties.skill` into the expression field. Observe the `Result` field contains an array of the skill value for each player.
+Enter `players[].properties.skill` into the expression field. Observe that `Result` field contains an array of the skill value for each player.
 
 ```
 [
@@ -70,7 +70,7 @@ Enter `players[].properties.skill` into the expression field. Observe the `Resul
 You can use the [diff](https://developer.apple.com/documentation/appstoreconnectapi/game_center/expressions/computing_numeric_differences) function to evaluate the skill range in a MATCH rule expression.
 However, currently this isn't available in the [JMESPath playground](https://play.jmespath.org).
 
-If you use the expression `requests[].properties.skill` the result only contains the skill values for the players making the requests and doesn't include the value the request provides for the invited player.
+If you use the expression `requests[].properties.skill`, the result only contains the skill values for the players making the requests and doesn't include the value the request provides for the invited player.
 This is the difference between the `players` and the `requests` object in the input.
 
 ```
@@ -96,10 +96,10 @@ The result will be `10`.
 
 ### Example 2
 
-In the second example there are 2 new requests:
+In the second example, there are two new requests:
 
-1. Request from an older version of the app where no skill property is provided.
-2. Request from a new version of the app where a skill of 45 is provided.
+1. Request from an older version of the app where no skill property is provided
+2. Request from a new version of the app where a skill of 45 is provided
 
 ```
 $ genrulesinput.py << 'EOF'
@@ -126,7 +126,7 @@ $ genrulesinput.py << 'EOF'
 ...
 ```
 
-The objective is to write an expression that evaluates an array which contains a skill value for each request and provides a default value where the request provides no skill property.
+The objective is to write an expression that evaluates an array that contains a skill value for each request and provides a default value where the request provides no skill property.
 Enter the expression used before `players[].properties.skill` to obtain an array of skill values.
 
 ```
@@ -150,7 +150,7 @@ Enter `requests[].properties.[ skill, ``50``]` to generate an array for each req
 ]
 ```
 
-Enter `requests[].properties.[ skill, ``50``][*].not_null(@) | [*][0]` which flattens the arrays one level, filters out null values, pipes the results to select the first element, and flattens again into a single array of a skill value for each request.
+Enter `requests[].properties.[ skill, ``50``][*].not_null(@) | [*][0]`, which flattens the arrays one level, filters out null values, pipes the results to select the first element, and flattens again into a single array of a skill value for each request.
 
 ```
 [
@@ -159,7 +159,7 @@ Enter `requests[].properties.[ skill, ``50``][*].not_null(@) | [*][0]` which fla
 ]
 ```
 
-This can then be used to evaluate a skill range and compare to the desired skill range for the match.
+You can then be use this to evaluate a skill range and compare to the desired skill range for the match.
 
-As you can see the [JMESPath JSON query language](https://jmespath.org) is very powerful and it is helpful to have a playground to explore complex expressions.
+As you can see, the [JMESPath JSON query language](https://jmespath.org) is very powerful and it is helpful to have a playground to explore complex expressions.
 

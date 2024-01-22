@@ -25,7 +25,7 @@ class Keys(str, Enum):
 
 
 def to_index_request_players_tuple(index, input):
-    """ Return a tuple of the index(0), request (1), and list of player properties (2)
+    """ Return a tuple of the index(0), request (1), and list of player properties (2).
     """
 
     request_input = input[0] if type(input) == list else input
@@ -62,7 +62,7 @@ def to_index_request_players_tuple(index, input):
     )
 
 def to_player(request_index, player_index, player_properties):
-    """ Return player properties - stripped of request level keys
+    """ Return player properties, stripped of request level keys.
     """
     
     return {
@@ -72,7 +72,7 @@ def to_player(request_index, player_index, player_properties):
     }
 
 def to_player_properties(input):
-    """ Return player properties - stripped of request level keys
+    """ Return player properties, stripped of request level keys.
     """
     
     return dict(item for item in input.items() if not item[0] in [e.value for e in Keys])
@@ -85,7 +85,7 @@ def to_request(request_index):
     }
 
 def to_teams(indexRequestPlayers):
-    """ Return teams from list of tuples of index, request and list of players.
+    """ Return teams from list of tuples of index, request, and list of players.
     """
     maxPlayers = 2
     teams = [
@@ -146,7 +146,7 @@ def main():
         See https://developer.apple.com/documentation/appstoreconnectapi/creating_rule_expressions.
 
         The input is a JSON string representing an array of objects. Each object represents a request
-        where the name/value pairs are either request level properties or custom player properties.
+        where the name and value pairs are either request-level properties or custom player properties.
         The request properties that can be set from the input are:
 
         appVersion      - default '1.0'
@@ -162,9 +162,9 @@ def main():
 
         Other input request object names are assumed to be custom player properties.
 
-        A input array object can also be an array of objects representing a request with invited players
+        A input array object can also be an array of objects representing a request with invited players,
         where each object is the player properties. The first object representing the requesting player
-        accepts request level properties.
+        accepts request-level properties.
         """,
     )
     parser.add_argument(
@@ -184,7 +184,8 @@ def main():
         for t in index_input
     ]
     requests = [ t[1] for t in index_request_players ]
-    players = list(chain.from_iterable(map(lambda t: t[2], index_request_players)))
+    players = [player for t in index_request_players for player in t[2]]
+    assert players1 == players
     teams = to_teams(index_request_players)
     output = {
         "requests": requests,

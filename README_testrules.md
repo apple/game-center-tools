@@ -21,7 +21,7 @@ To create your matchmaking rules, see [Finding players using matchmaking rules](
 
 Then follow these steps to use the script:
 
-1. Optionally, set an environment variable for the rule ID (`RULE_ID`) and ASC API JWT authentication token (`ASC_API_TOKEN`) so that you don’t need to pass these to the script.
+1. Optionally, set an environment variable for the rule ID (`RULE_ID`) and ASC API JWT authentication token (`ASC_API_TOKEN`) so you don’t need to pass these to the script.
 2. Run the `pip3 `**`install`**` requests` command.
 
 For a complete list of the `testrules.py` arguments, run the  `testrules.py —h` command.
@@ -35,8 +35,8 @@ For examples of rules that use player properties, see [Letting players join matc
 and [Finding players with similar skill levels](https://developer.apple.com/documentation/gamekit/matchmaking_rules/finding_players_with_similar_skill_levels).
 
 In the `testrules.py` example below, the rules match two players with skill values ranging from 0 to 20.
-The `testrules.py` command passes four match requests to the testing API with player property skill values: 1, 21, 2, and 22.
-The script generates JSON content for the match requests with `requestName` attributes in sequence ( `r1`, `r2`, `r3`, `r4`, etc.), along with `playerId` attributes in the sequence (`r1_p1`, `r2_p1`, `r3_p1`, `r4_p1`, etc.).
+The `testrules.py` command passes four match requests to the testing API with player property skill values 1, 21, 2, and 22.
+The script generates JSON content for the match requests with `requestName` attributes in sequence ( `r1`, `r2`, `r3`, `r4`, etc.), along with `playerId` attributes in the sequence (`r1_p1`, `r2_p1`, `r3_p1`, `r4_p1`, and so on).
 If you associate more than one player with a match request, the script generates `playerId` attributes in the sequence: `r1_p1`, `r1_p2`, etc. 
 
 The testing API response contains the match results. In this example, the skill-based matchmaking rules find players with compatible skill levels. The results contain two matches (`[ r1, r3 ]` and `[ r2, r4 ]`).
