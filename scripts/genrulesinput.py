@@ -43,9 +43,6 @@ def to_index_request_players_tuple(index, input):
         Keys.APP_VERSION: request_input.get(Keys.APP_VERSION) or "1.0.0",
         Keys.BUNDLE_ID: request_input.get(Keys.BUNDLE_ID) or "com.example.mygame",
         Keys.PLATFORM: request_input.get(Keys.PLATFORM) or "IOS",
-        Keys.LOCALE: request_input.get(Keys.LOCALE) or "EN-US",
-        Keys.LONGITUDE: request_input.get(Keys.LONGITUDE) or 0,
-        Keys.LATITUDE: request_input.get(Keys.LATITUDE) or 0,
         Keys.MIN_PLAYERS: request_input.get(Keys.MIN_PLAYERS) or 2,
         Keys.MAX_PLAYERS: request_input.get(Keys.MAX_PLAYERS) or 2,
         Keys.PLAYER_COUNT: len(players),
@@ -180,7 +177,6 @@ def main():
     ]
     requests = [ t[1] for t in index_request_players ]
     players = [player for t in index_request_players for player in t[2]]
-    assert players1 == players
     teams = to_teams(index_request_players)
     output = {
         "requests": requests,
