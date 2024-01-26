@@ -15,8 +15,6 @@ import sys
 class Keys(str, Enum):
     APP_VERSION = "appVersion"
     BUNDLE_ID = "bundleId"
-    LOCALE = "locale"
-    LOCATION = "location"
     MAX_PLAYERS = "maxPlayers"
     MIN_PLAYERS = "minPlayers"
     PLATFORM = "platform"
@@ -81,10 +79,6 @@ def to_gameCenterMatchmakingTestRequests(
             "requestName": request_name,
             Keys.APP_VERSION: request_dict.get(Keys.APP_VERSION, "1.0.0"),
             Keys.BUNDLE_ID: request_dict.get(Keys.BUNDLE_ID, "com.example.mygame"),
-            Keys.LOCALE: request_dict.get(Keys.LOCALE, "EN-US"),
-            Keys.LOCATION: request_dict.get(
-                Keys.LOCATION, {"latitude": 0, "longitude": 0}
-            ),
             Keys.PLATFORM: request_dict.get(Keys.PLATFORM, "IOS"),
             "playerCount": player_count,
             Keys.SECOND_IN_QUEUE: request_dict.get(Keys.SECOND_IN_QUEUE, 0),
@@ -179,8 +173,6 @@ def main():
 
         appVersion      - default '1.0'
         bundleId        - default 'com.example.mygame'
-        locale          - default 'EN-US'
-        location        - default {"latitude": 0, "longitude": 0}
         maxPlayers      - no default
         minPlayers      - no default
         platform        - default 'IOS'

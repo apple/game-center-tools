@@ -14,9 +14,6 @@ import sys
 class Keys(str, Enum):
     APP_VERSION = "appVersion"
     BUNDLE_ID = "bundleId"
-    LATITUDE = "latitude"
-    LOCALE = "locale"
-    LONGITUDE = "longitude"
     MAX_PLAYERS = "maxPlayers"
     MIN_PLAYERS = "minPlayers"
     PLATFORM = "platform"
@@ -151,8 +148,6 @@ def main():
 
         appVersion      - default '1.0'
         bundleId        - default 'com.example.mygame'
-        locale          - default 'EN-US'
-        location        - default {"latitude": 0, "longitude": 0}
         maxPlayers      - no default
         minPlayers      - no default
         platform        - default 'IOS'
